@@ -2,10 +2,10 @@
 name = "ccometixline"
 version = "1.1.2"
 edition = "2021"
-description = "CCometixLine (ccline) - High-performance Claude Code StatusLine tool written in Rust"
+description = "CCometixLine (ccline) - Pi Agent statusline renderer written in Rust"
 authors = ["Haleclipse"]
 license = "MIT"
-repository = "https://github.com/Haleclipse/CCometixLine"
+repository = "https://github.com/xbunax/CCometixLineForPi"
 readme = "README.md"
 keywords = ["claude", "statusline", "powerline", "rust", "claude-code"]
 categories = ["command-line-utilities", "development-tools"]

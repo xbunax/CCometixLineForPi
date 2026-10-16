@@ -1,9 +1,6 @@
-name: Release
+name: Legacy upstream release (disabled)
 
 on:
-  push:
-    tags:
-      - 'v*'
   workflow_dispatch:
 
 permissions:
@@ -12,6 +9,7 @@ permissions:
 
 jobs:
   build:
+    if: github.repository == 'Haleclipse/CCometixLine'
     name: Build for ${{ matrix.target }}
     runs-on: ${{ matrix.os }}
     strategy:

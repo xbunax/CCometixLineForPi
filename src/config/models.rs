@@ -130,8 +130,8 @@ impl ModelConfig {
         let mut model_config = Self::default();
 
         // First, try to create default models.toml if it doesn't exist
-        if let Some(home_dir) = dirs::home_dir() {
-            let user_models_path = home_dir.join(".claude").join("ccline").join("models.toml");
+        if dirs::home_dir().is_some() {
+            let user_models_path = super::ConfigLoader::get_base_path().join("models.toml");
             if !user_models_path.exists() {
                 let _ = Self::create_default_file(&user_models_path);
             }
@@ -139,7 +139,7 @@ impl ModelConfig {
 
         // Try loading from user config directory first, then local
         let config_paths = [
-            dirs::home_dir().map(|d| d.join(".claude").join("ccline").join("models.toml")),
+            Some(super::ConfigLoader::get_base_path().join("models.toml")),
             Some(Path::new("models.toml").to_path_buf()),
         ];
 
@@ -255,7 +255,7 @@ impl ModelConfig {
         // Add comments and examples to the template
         let template_content = "# CCometixLine Model Configuration\n\
              # This file defines model display names and context limits for different LLM models\n\
-             # File location: ~/.claude/ccline/models.toml\n\
+             # File location: ~/.pi/agent/ccline/models.toml\n\
              #\n\
              # Claude models are automatically recognized (Sonnet, Opus, Haiku) with\n\
              # version extraction. You only need to add entries here for overrides or\n\

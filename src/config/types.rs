@@ -112,6 +112,10 @@ pub struct OutputStyle {
 
 #[derive(Deserialize)]
 pub struct InputData {
+    /// Pi bridge marker. Prevents Claude-only credential and transcript access.
+    #[serde(default)]
+    pub pi: bool,
+    pub context_window: Option<ContextUsage>,
     pub model: Model,
     pub workspace: Workspace,
     pub transcript_path: String,
@@ -413,4 +417,11 @@ pub struct TranscriptEntry {
     #[serde(rename = "parentUuid")]
     pub parent_uuid: Option<String>,
     pub summary: Option<String>,
+}
+
+/// Authoritative context estimate from Pi; null tokens means unknown after compaction.
+#[derive(Deserialize)]
+pub struct ContextUsage {
+    pub tokens: Option<u32>,
+    pub context_window: u32,
 }

@@ -14,6 +14,19 @@ pub enum InitResult {
 pub struct ConfigLoader;
 
 impl ConfigLoader {
+    /// Pi configuration is isolated from the upstream Claude Code installation.
+    pub fn get_base_path() -> PathBuf {
+        let agent_dir = std::env::var_os("PI_CODING_AGENT_DIR")
+            .map(PathBuf::from)
+            .unwrap_or_else(|| {
+                dirs::home_dir()
+                    .unwrap_or_else(|| PathBuf::from("."))
+                    .join(".pi")
+                    .join("agent")
+            });
+        agent_dir.join("ccline")
+    }
+
     pub fn load() -> Config {
         Config::load().unwrap_or_else(|_| Config::default())
     }
@@ -63,13 +76,9 @@ impl ConfigLoader {
         Ok(())
     }
 
-    /// Get the themes directory path (~/.claude/ccline/themes/)
+    /// Get the themes directory path (~/.pi/agent/ccline/themes/)
     pub fn get_themes_path() -> PathBuf {
-        if let Some(home) = dirs::home_dir() {
-            home.join(".claude").join("ccline").join("themes")
-        } else {
-            PathBuf::from(".claude/ccline/themes")
-        }
+        Self::get_base_path().join("themes")
     }
 
     /// Ensure themes directory exists and has built-in themes (silent mode)
@@ -142,13 +151,9 @@ impl Config {
         Ok(())
     }
 
-    /// Get the default config file path (~/.claude/ccline/config.toml)
+    /// Get the default config file path (~/.pi/agent/ccline/config.toml)
     fn get_config_path() -> PathBuf {
-        if let Some(home) = dirs::home_dir() {
-            home.join(".claude").join("ccline").join("config.toml")
-        } else {
-            PathBuf::from(".claude/ccline/config.toml")
-        }
+        ConfigLoader::get_base_path().join("config.toml")
     }
 
     /// Initialize config directory and create default config
