@@ -462,6 +462,17 @@ pub fn collect_all_segments(
     let mut results = Vec::new();
 
     for segment_config in &config.segments {
+        // Pi has no Claude subscription quota or Claude output-style/update data.
+        if input.pi
+            && matches!(
+                segment_config.id,
+                crate::config::SegmentId::Usage
+                    | crate::config::SegmentId::OutputStyle
+                    | crate::config::SegmentId::Update
+            )
+        {
+            continue;
+        }
         // Skip disabled segments to avoid unnecessary API requests
         if !segment_config.enabled {
             continue;

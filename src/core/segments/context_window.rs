@@ -23,9 +23,18 @@ impl ContextWindowSegment {
 impl Segment for ContextWindowSegment {
     fn collect(&self, input: &InputData) -> Option<SegmentData> {
         // Dynamically determine context limit based on current model ID
-        let context_limit = Self::get_context_limit_for_model(&input.model.id);
+        let context_limit = input
+            .context_window
+            .as_ref()
+            .map(|usage| usage.context_window)
+            .filter(|limit| *limit > 0)
+            .unwrap_or_else(|| Self::get_context_limit_for_model(&input.model.id));
 
-        let context_used_token_opt = parse_transcript_usage(&input.transcript_path);
+        let context_used_token_opt = if input.pi {
+            input.context_window.as_ref().and_then(|usage| usage.tokens)
+        } else {
+            parse_transcript_usage(&input.transcript_path)
+        };
 
         let (percentage_display, tokens_display) = match context_used_token_opt {
             Some(context_used_token) => {
